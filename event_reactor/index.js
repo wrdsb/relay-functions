@@ -21,8 +21,8 @@ module.exports = function (context, eventGridEvent) {
 
     client.execute("g.V().count()", { }, (err, results) => {
         if (err) {
-            return callback(console.error(err));
+            console.log(err);
         }
-        console.log("Result: %s\n", JSON.stringify(results));
+        context.log("Result: %s\n", JSON.stringify(results));
     });
 };
