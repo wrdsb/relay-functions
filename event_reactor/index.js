@@ -4,12 +4,12 @@ module.exports = function (context, eventGridEvent) {
 
     const client = Gremlin.createClient(
         443,
-        process.env[relayGraphURL],
+        process.env["relayGraphURL"],
         {
             "session": false,
             "ssl": true,
-            "user": `/dbs/${process.env[relayGraphDatabase]}/colls/${process.env[relayGraphCollection]}`,
-            "password": process.env[relayGraphPrimaryKey]
+            "user": `/dbs/${process.env["relayGraphDatabase"]}/colls/${process.env["relayGraphCollection"]}`,
+            "password": process.env["relayGraphPrimaryKey"]
         }
     );
 
