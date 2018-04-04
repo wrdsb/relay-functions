@@ -9,5 +9,7 @@
     "author": "",
     "license": "MIT",
     "dependencies": {
+        "async": "^2.6.0",
+        "gremlin": "^2.6.0"
     }
   }
