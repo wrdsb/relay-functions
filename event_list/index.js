@@ -30,13 +30,13 @@ module.exports = function (context, data) {
         if (err) {
             context.done(err);
         } else {
-            results = JSON.stringify(results);
-            context.bindings.outBlob = results;
-            context.log(results);
             context.res = {
                 status: 200,
                 body: results
             };
+            results = JSON.stringify(results);
+            context.bindings.outBlob = results;
+            context.log(results);
             context.done(null, results);
         }
     });
