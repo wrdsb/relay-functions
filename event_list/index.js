@@ -1,5 +1,8 @@
 module.exports = function (context, data) {
+    var storage = require('azure-storage');
+    var blobService = storage.createBlobService();
     var Gremlin = require('gremlin');
+    var async = require('async');
 
     const client = Gremlin.createClient(
         443,
@@ -27,16 +30,29 @@ module.exports = function (context, data) {
         },
         function(results, callback) {
             results.forEach(function(event) {
+                client.execute(`g.V().has('id', '${event.eventType}').in()`, { }, (err, results) => {
+                    if (err) {
+                        callback(err);
+                    } else {
+                        event.triggered_by = results;
+                    }
+                });
+                client.execute(`g.V().has('id', '${event.eventType}').out()`, { }, (err, results) => {
+                    if (err) {
+                        callback(err);
+                    } else {
+                        event.triggers = results;
+                    }
+                });
                 context.log(JSON.stringify(event));
-                //client.execute(`g.V().has('id', '${event_grid_event.eventType}').in()`, { }, (err, results) => {
-                //client.execute(`g.V().has('id', '${event_grid_event.eventType}').out()`, { }, (err, results) => {
+                callback(null, event);
             });
         }
-    ], function (err, result) {
+    ], function (err, event) {
         if (err) {
             context.done(err);
         } else {
-            context.done(null, result);
+            context.done(null, event);
         }
     });
 };
