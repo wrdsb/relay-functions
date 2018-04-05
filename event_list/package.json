@@ -9,6 +9,7 @@
     "author": "",
     "license": "MIT",
     "dependencies": {
+        "azure-storage": "^2.0.0",
         "async": "^2.6.0",
         "gremlin": "^2.6.0"
     }
