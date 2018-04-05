@@ -28,6 +28,8 @@ module.exports = function (context, data) {
         function(results, callback) {
             results.forEach(function(event) {
                 context.log(JSON.stringify(event));
+                //client.execute(`g.V().has('id', '${event_grid_event.eventType}').in()`, { }, (err, results) => {
+                //client.execute(`g.V().has('id', '${event_grid_event.eventType}').out()`, { }, (err, results) => {
             });
         }
     ], function (err, result) {
