@@ -1,6 +1,4 @@
 module.exports = function (context, data) {
-    var storage = require('azure-storage');
-    var blobService = storage.createBlobService();
     var Gremlin = require('gremlin');
     var async = require('async');
 
@@ -28,31 +26,13 @@ module.exports = function (context, data) {
                 }
             });
         },
-        function(results, callback) {
-            results.forEach(function(event) {
-                client.execute(`g.V().has('id', '${event.eventType}').in()`, { }, (err, results) => {
-                    if (err) {
-                        callback(err);
-                    } else {
-                        event.triggered_by = results;
-                    }
-                });
-                client.execute(`g.V().has('id', '${event.eventType}').out()`, { }, (err, results) => {
-                    if (err) {
-                        callback(err);
-                    } else {
-                        event.triggers = results;
-                    }
-                });
-                context.log(JSON.stringify(event));
-                callback(null, event);
-            });
-        }
-    ], function (err, event) {
+    ], function (err, results) {
         if (err) {
             context.done(err);
         } else {
-            context.done(null, event);
+            context.bindings.outBlob = results;
+            context.log(esults);
+            context.done(null, results);
         }
     });
 };
