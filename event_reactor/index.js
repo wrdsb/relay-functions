@@ -1,4 +1,7 @@
 module.exports = function (context, eventGridEvent) {
+    var execution_timestamp = (new Date()).toJSON();  // format: 2012-04-23T18:25:43.511Z
+    var flynn_event;
+
     var Gremlin = require('gremlin');
     var async = require('async');
 
