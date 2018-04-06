@@ -60,17 +60,17 @@ module.exports = function (context, data) {
             context.bindings.outBlob = JSON.stringify(event);
             flynn_event = {
                 id: 'wrdsb-flynn-'+ context.executionContext.functionName +'-'+ context.executionContext.invocationId,
-                eventTime: execution_timestamp,
-                subject: 'relay-reads-event',
                 eventType: 'Functions.Relay.EventRead',
-                app: 'wrdsb-flynn',
-                operation: 'event_read',
-                function_name: context.executionContext.functionName,
-                invocation_id: context.executionContext.invocationId,
+                subject: 'relay-reads-event',
+                eventTime: execution_timestamp,
                 data: {
+                    app: 'wrdsb-flynn',
+                    operation: 'event_read',
+                    function_name: context.executionContext.functionName,
+                    invocation_id: context.executionContext.invocationId,
+                    data_blob: `event-objects/${event.id}.json`,
                     event: event
                 },
-                data_blob: `event-objects/${event.id}.json`,
                 dataVersion: '1'
             };
             context.bindings.flynnGrid = JSON.stringify(flynn_event);
