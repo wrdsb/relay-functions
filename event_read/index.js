@@ -57,14 +57,29 @@ module.exports = function (context, data) {
         if (err) {
             context.done(err);
         } else {
+            context.bindings.outBlob = JSON.stringify(event);
+            flynn_event = {
+                id: 'wrdsb-flynn-'+ context.executionContext.functionName +'-'+ context.executionContext.invocationId,
+                eventTime: execution_timestamp,
+                subject: 'relay-reads-event',
+                eventType: 'Functions.Relay.EventRead',
+                app: 'wrdsb-flynn',
+                operation: 'event_read',
+                function_name: context.executionContext.functionName,
+                invocation_id: context.executionContext.invocationId,
+                data: {
+                    event: event
+                },
+                data_blob: `event-objects/${event.id}.json`,
+                dataVersion: '1'
+            };
+            context.bindings.flynnGrid = JSON.stringify(flynn_event);
             context.res = {
                 status: 200,
-                body: event
+                body: flynn_event
             };
-            event = JSON.stringify(event);
-            context.bindings.outBlob = event;
-            context.log(event);
-            context.done(null, event);
+            context.log(flynn_event);
+            context.done(null, flynn_event);
         }
     });
 };

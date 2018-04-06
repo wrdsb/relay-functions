@@ -10,10 +10,17 @@
         ]
       },
       {
-        "type": "blob",
         "name": "outBlob",
+        "type": "blob",
         "path": "event-objects/{id}.json",
         "connection": "wrdsbrelay_STORAGE",
+        "direction": "out"
+      },
+      {
+        "name": "flynnGrid",
+        "type": "eventHub",
+        "path": "hopper",
+        "connection": "wrdsb-flynn_EVENTHUB",
         "direction": "out"
       },
       {
