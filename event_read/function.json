@@ -12,7 +12,7 @@
       {
         "type": "blob",
         "name": "outBlob",
-        "path": "event-objects/{eventType}.json",
+        "path": "event-objects/{id}.json",
         "connection": "wrdsbrelay_STORAGE",
         "direction": "out"
       },

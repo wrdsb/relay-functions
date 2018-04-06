@@ -3,7 +3,7 @@ module.exports = function (context, data) {
     var async = require('async');
 
     var event = {};
-    event.id = data.eventType;
+    event.id = data.id;
 
     const client = Gremlin.createClient(
         443,
