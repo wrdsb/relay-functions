@@ -1,11 +1,11 @@
-module.exports = function (context, eventGridEvent) {
+module.exports = function (context, triggerEvent) {
     var execution_timestamp = (new Date()).toJSON();  // format: 2012-04-23T18:25:43.511Z
     var flynn_event;
 
     var Gremlin = require('gremlin');
     var async = require('async');
 
-    var event_grid_event = eventGridEvent;
+    var trigger_event = triggerEvent;
     var relay_event;
 
     const client = Gremlin.createClient(
@@ -21,23 +21,23 @@ module.exports = function (context, eventGridEvent) {
 
     async.waterfall([
         function(callback) {
-            callback(null, client, event_grid_event, relay_event);
+            callback(null, client, trigger_event, relay_event);
         },
-        function(client, event_grid_event, relay_event, callback) {
-            context.log(event_grid_event);
-            client.execute(`g.V().has('id', '${event_grid_event.eventType}')`, { }, (err, results) => {
+        function(client, trigger_event, relay_event, callback) {
+            context.log(trigger_event);
+            client.execute(`g.V().has('id', '${trigger_event.eventType}')`, { }, (err, results) => {
                 if (err) {
                     callback(err);
                 } else {
                     // TODO: handle missing/null vertex
                     relay_event = results;
-                    callback(null, client, event_grid_event, relay_event);
+                    callback(null, client, trigger_event, relay_event);
                 }
             });
         },
-        function(client, event_grid_event, relay_event, callback) {
+        function(client, trigger_event, relay_event, callback) {
             context.log(JSON.stringify(relay_event));
-            client.execute(`g.V().has('id', '${event_grid_event.eventType}').out()`, { }, (err, results) => {
+            client.execute(`g.V().has('id', '${trigger_event.eventType}').out()`, { }, (err, results) => {
                 if (err) {
                     callback(err);
                 } else {
