@@ -5,7 +5,7 @@
         "type": "eventHubTrigger",
         "connection": "wrdsb-flynn_EVENTHUB",
         "path": "flynn-events",
-        "consumerGroup": "$Default",
+        "consumerGroup": "relay",
         "cardinality": "one",
         "direction": "in"
       },

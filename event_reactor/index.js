@@ -10,6 +10,8 @@ module.exports = function (context, triggerEvent) {
 
     // TODO: validate trigger_event
 
+    context.log(trigger_event);
+
     const client = Gremlin.createClient(
         443,
         process.env["relayGraphURL"],
@@ -26,27 +28,26 @@ module.exports = function (context, triggerEvent) {
             callback(null, client, trigger_event, relay_event);
         },
         function(client, trigger_event, relay_event, callback) {
-            context.log(trigger_event);
             client.execute(`g.V().has('id', '${trigger_event.eventType}')`, { }, (err, results) => {
                 if (err) {
                     callback(err);
                 } else {
                     // TODO: handle missing/null vertex
                     relay_event = results;
-                    context.log(JSON.stringify(results));
+                    context.log(results);
                     callback(null, client, trigger_event, relay_event);
                 }
             });
         },
         function(client, trigger_event, relay_event, callback) {
-            context.log(JSON.stringify(relay_event));
+            context.log(relay_event);
             client.execute(`g.V().has('id', '${trigger_event.eventType}').out()`, { }, (err, results) => {
                 if (err) {
                     callback(err);
                 } else {
                     // TODO: handle missing/null edges
                     // TODO: handle array of events
-                    context.log(JSON.stringify(results));
+                    context.log(results);
                     callback(null, relay_event);
                 }
             });
@@ -56,26 +57,26 @@ module.exports = function (context, triggerEvent) {
         if (err) {
             context.done(err);
         } else {
-            var event_type = "ca.wrdsb.relay.event.reactor";
-            var flynn_event = {
-                eventID: `${event_type}-${context.executionContext.invocationId}`,
-                eventType: event_type,
-                source: "",
-                schemaURL: "ca.wrdsb.relay.event.reactor.json",
-                extensions: {},
-                data: {
-                    function_name: context.executionContext.functionName,
-                    invocation_id: context.executionContext.invocationId,
-                    result: {
-                    },
-                },
-                eventTime: execution_timestamp,
-                eventTypeVersion: "0.1",
-                cloudEventsVersion: "0.1",
-                contentType: "application/json"
-            };
-            events.push(JSON.stringify(flynn_event));
-            context.bindings.flynnGrid = events;
+            //var event_type = "ca.wrdsb.relay.event.reactor";
+            //var flynn_event = {
+                //eventID: `${event_type}-${context.executionContext.invocationId}`,
+                //eventType: event_type,
+                //source: "",
+                //schemaURL: "ca.wrdsb.relay.event.reactor.json",
+                //extensions: {},
+                //data: {
+                    //function_name: context.executionContext.functionName,
+                    //invocation_id: context.executionContext.invocationId,
+                    //result: {
+                    //},
+                //},
+                //eventTime: execution_timestamp,
+                //eventTypeVersion: "0.1",
+                //cloudEventsVersion: "0.1",
+                //contentType: "application/json"
+            //};
+            //events.push(JSON.stringify(flynn_event));
+            //context.bindings.flynnGrid = events;
             context.done(null, result);
         }
     });
