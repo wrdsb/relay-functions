@@ -15,6 +15,13 @@
         "queueName": "requests",
         "connection": "wrdsbcrankcase_STORAGE",
         "direction": "out"
+      },
+      {
+        "name": "flynnGrid",
+        "type": "eventHub",
+        "path": "flynn-events",
+        "connection": "wrdsb-flynn_EVENTHUB",
+        "direction": "out"
       }
     ],
     "disabled": false

@@ -1,12 +1,14 @@
 module.exports = function (context, triggerEvent) {
     var execution_timestamp = (new Date()).toJSON();  // format: 2012-04-23T18:25:43.511Z
-    var flynn_event;
+    var events = [];
 
+    var trigger_event = triggerEvent;  // incoming event object from trigger
+    var relay_event;  // trigger event's type, fetched from Relay database
+  
     var Gremlin = require('gremlin');
     var async = require('async');
 
-    var trigger_event = triggerEvent;
-    var relay_event;
+    // TODO: validate trigger_event
 
     const client = Gremlin.createClient(
         443,
@@ -31,6 +33,7 @@ module.exports = function (context, triggerEvent) {
                 } else {
                     // TODO: handle missing/null vertex
                     relay_event = results;
+                    context.log(JSON.stringify(results));
                     callback(null, client, trigger_event, relay_event);
                 }
             });
@@ -48,10 +51,31 @@ module.exports = function (context, triggerEvent) {
                 }
             });
         }
+        // TODO: if crankcase_job, JSON.parse crankcase_job
     ], function (err, result) {
         if (err) {
             context.done(err);
         } else {
+            var event_type = "ca.wrdsb.relay.event.reactor";
+            var flynn_event = {
+                eventID: `${event_type}-${context.executionContext.invocationId}`,
+                eventType: event_type,
+                source: "",
+                schemaURL: "ca.wrdsb.relay.event.reactor.json",
+                extensions: {},
+                data: {
+                    function_name: context.executionContext.functionName,
+                    invocation_id: context.executionContext.invocationId,
+                    result: {
+                    },
+                },
+                eventTime: execution_timestamp,
+                eventTypeVersion: "0.1",
+                cloudEventsVersion: "0.1",
+                contentType: "application/json"
+            };
+            events.push(JSON.stringify(flynn_event));
+            context.bindings.flynnGrid = events;
             context.done(null, result);
         }
     });
