@@ -1,2 +1,2 @@
-# relay-functions
-Azure Functions app for Relay, our event cascade coordinator
+# Archived
+Merged into [COSMOS](https://github.com/wrdsb/cosmos), June 3, 2020.
